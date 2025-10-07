@@ -1,0 +1,43 @@
+[project]
+name = "gdrive-utils"
+version = "0.1.0"
+description = "Utilities CLI for working with Google Drive"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+  { name = "Shane McDonald", email = "me@shanemcd.com" }
+]
+keywords = ["google", "drive", "cli", "utils"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "google-auth>=2.0.0",
+  "google-auth-oauthlib>=1.0.0",
+  "google-auth-httplib2>=0.1.0",
+  "google-api-python-client>=2.0.0",
+  "pypandoc>=1.11",
+]
+
+[project.urls]
+Homepage = "https://github.com/shanemcd/gdrive-utils"
+Repository = "https://github.com/shanemcd/gdrive-utils"
+
+[project.scripts]
+gdrive-utils = "gdrive_utils.cli:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gdrive_utils*"]
+exclude = ["tests*"]
+
