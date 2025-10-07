@@ -29,9 +29,16 @@ On first use, the CLI will open your browser to authenticate. Credentials are ca
 
 ### File Operations
 - `list [-q query] [-t type] [-n max] [-v]`: list and search files in Google Drive
-- `info <file-id>`: show metadata for a Google Drive file
-- `download <file-id> [-o output]`: download a file from Google Drive
-- `export <file-id> [-o output]`: export a Google Doc as markdown (text format)
+- `info <file-id-or-url> [-v]`: show metadata, permissions, tabs, and structure
+- `download <file-id-or-url> [-o output]`: download a file from Google Drive
+- `export <file-id-or-url> [-o output] [--all-tabs]`: export Google Doc as markdown with full formatting
+
+**Key Features:**
+- ✅ **URL Support**: Paste full Google Drive URLs (Docs, Sheets, Slides, Drive files)
+- ✅ **Native Markdown Export**: Uses Google's native markdown with formatting (headings, tables, links, bold, italic)
+- ✅ **Multi-tab Support**: Export each tab as a separate file with `--all-tabs`
+- ✅ **Detailed Info**: View permissions, sharing, capabilities, document tabs, and heading structure
+- ✅ **Auto-naming**: Exported files use document title and `.exported.md` extension (auto-ignored by git)
 
 **Examples:**
 ```bash
@@ -47,21 +54,28 @@ uv run gdrive-utils list -q "project report"
 # List with verbose details
 uv run gdrive-utils list -v -n 10
 
-# Show file metadata
-uv run gdrive-utils info 1abc123xyz
+# Show basic file metadata (using URL)
+uv run gdrive-utils info "https://docs.google.com/document/d/1abc123xyz/edit"
 
-# Export a Google Doc to markdown (stdout)
-uv run gdrive-utils export 1abc123xyz
+# Show detailed info with permissions, tabs, and structure
+uv run gdrive-utils info -v "https://docs.google.com/document/d/1abc123xyz/edit?tab=t.0"
 
-# Export a Google Doc to a file
+# Export Google Doc with document title as filename
+uv run gdrive-utils export "https://docs.google.com/document/d/1abc123xyz/edit"
+# Creates: Document Title.exported.md
+
+# Export all tabs as separate files
+uv run gdrive-utils export --all-tabs "https://docs.google.com/document/d/1abc123xyz/edit"
+# Creates: Document Title - Tab1.exported.md, Document Title - Tab2.exported.md, etc.
+
+# Export to specific file
 uv run gdrive-utils export 1abc123xyz -o document.md
 
 # Download a regular file
-uv run gdrive-utils download 1abc123xyz -o ~/Downloads/
+uv run gdrive-utils download "https://drive.google.com/file/d/1abc123xyz/view" -o ~/Downloads/
 ```
 
-**Note:** To get a file ID, open the file in Google Drive and copy the ID from the URL:
-`https://docs.google.com/document/d/FILE_ID_HERE/edit`
+**Note:** All commands accept Google Drive URLs or file IDs. URLs can include tabs, fragments, and query parameters.
 
 ## Proposed Agents and Workflows
 
@@ -81,9 +95,10 @@ These are candidate subcommands we can design and prioritize. We'll refine flags
   - `move <file-id|path> --dest <folder>`
   - `trash <file-id|path>` and `restore <file-id>`
 - Docs/Sheets Exports
-  - ~~`export <doc-id> --format md`: export Google Doc as markdown~~ ✅ **DONE** (currently text/plain)
+  - ~~`export <doc-id> --format md`: export Google Doc as markdown~~ ✅ **DONE** (uses Google's native markdown export)
+  - ~~`export <doc-id> --all-tabs`: export multi-tab documents~~ ✅ **DONE**
   - `export <doc-id> --format pdf|html`: additional export formats
-  - Enhanced markdown export with better formatting
+  - `export <sheet-id>`: export Google Sheets as CSV/Excel
 - Administration
   - `perm-audit [--folder <id|path>] [--recursive]` summarize external shares
   - `quota` view usage by owner, mime-type, folder
@@ -110,20 +125,27 @@ Secrets (tokens, refresh tokens, service account keys) are stored securely; neve
 
 - Execution: prefer `uv run gdrive-utils ...` for local development
 - Console name: `gdrive-utils`, package: `gdrive_utils`
-- Output: default human-readable; `--json` to emit structured JSON
+- Output: default human-readable; `--json` to emit structured JSON (planned)
 - Exit codes: non-zero on errors; subcommands return actionable messages
-- Logging: `--verbose`/`--quiet` planned; `--version` implemented
+- Logging: `--verbose` for detailed output; `--version` implemented
+- File naming: exported files use `.exported.md` extension (auto-ignored by git via `.gitignore`)
+- URL support: all commands accept full Google Drive URLs or file IDs
 
 ## Roadmap
 
 1. ✅ Bootstrap CLI
 2. ✅ Implement OAuth flow with browser authentication
 3. ✅ Add `info`, `download`, and `export` commands
-4. 🚧 Test with real Google Drive files
-5. ⏭️ Add `list` and `search` commands
-6. ⏭️ Add `upload` command
-7. ⏭️ Enhanced markdown export with better formatting
-8. ⏭️ Add `share`/`perm-audit` with safety rails
+4. ✅ Add `list` and `search` commands
+5. ✅ URL support for all commands (accept full Google Drive URLs)
+6. ✅ Native markdown export with full formatting
+7. ✅ Multi-tab document support (view tabs, export individually)
+8. ✅ Detailed file info (permissions, sharing, capabilities, structure)
+9. ⏭️ Add `upload` command
+10. ⏭️ Add `share`/`perm-audit` with safety rails
+11. ⏭️ JSON output mode (`--json`)
+12. ⏭️ Google Sheets export (CSV/Excel)
+13. ⏭️ Additional export formats (PDF, HTML)
 
 ## Notes
 

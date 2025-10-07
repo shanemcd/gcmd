@@ -4,11 +4,14 @@ A Python CLI tool for working with Google Drive. Download files, export Google D
 
 ## Features
 
-- 🔐 OAuth authentication with browser-based login
-- 📄 Export Google Docs as markdown
-- 💾 Download files from Google Drive
-- 📊 View file metadata
-- 🚀 Fast and easy to use
+- 🔐 **OAuth authentication** with browser-based login
+- 📄 **Export Google Docs** as markdown with full formatting (headings, tables, links, bold, italic)
+- 📑 **Multi-tab support** - export each tab as a separate file
+- 🔍 **Search and list** files with filtering by type and query
+- 📊 **Detailed file info** - view metadata, permissions, sharing, document structure, and tabs
+- 💾 **Download files** from Google Drive
+- 🔗 **URL support** - paste full Google Drive URLs instead of file IDs
+- 🚀 **Fast and easy to use**
 
 ## Installation
 
@@ -57,18 +60,30 @@ uv run gdrive-utils list -v -n 10
 uv run gdrive-utils list -t folders
 ```
 
-### Export Google Doc as Markdown
+### Export Google Docs as Markdown
+
+Google Docs are exported using Google's native markdown export, preserving formatting like headings, tables, links, bold, and italic text.
 
 ```bash
-# Export to stdout
-uv run gdrive-utils export 1abc123xyz
+# Export with document title as filename (recommended)
+uv run gdrive-utils export "https://docs.google.com/document/d/1abc123xyz/edit"
+# Creates: Document Title.exported.md
 
-# Export to file
+# Export all tabs as separate files
+uv run gdrive-utils export --all-tabs "https://docs.google.com/document/d/1abc123xyz/edit"
+# Creates: Document Title - Tab1.exported.md, Document Title - Tab2.exported.md, etc.
+
+# Export to specific file
 uv run gdrive-utils export 1abc123xyz -o document.md
 
-# Export to directory (uses original filename)
+# Export to directory (uses document title)
 uv run gdrive-utils export 1abc123xyz -o ~/Documents/
+
+# Export all tabs to specific directory
+uv run gdrive-utils export --all-tabs 1abc123xyz -o ~/Documents/
 ```
+
+**Note:** Files with `.exported.md` extension are automatically ignored by git (see `.gitignore`).
 
 ### Download Files
 
@@ -82,27 +97,48 @@ uv run gdrive-utils download 1abc123xyz -o ~/Downloads/myfile.pdf
 
 ### View File Info
 
+View detailed information including metadata, permissions, sharing status, and document structure.
+
 ```bash
-uv run gdrive-utils info 1abc123xyz
+# Basic info
+uv run gdrive-utils info "https://docs.google.com/document/d/1abc123xyz/edit"
+
+# Detailed info with permissions, capabilities, tabs, and document structure
+uv run gdrive-utils info -v "https://docs.google.com/document/d/1abc123xyz/edit"
 ```
 
-### Finding File IDs
+The verbose output shows:
+- File metadata (name, type, size, dates)
+- Owner and last modifier
+- All permissions (users, groups, domains, public links)
+- Your capabilities (can edit, comment, share, download, etc.)
+- Document tabs (for multi-tab Google Docs)
+- Document outline with all headings
 
-File IDs are in the URL when you open a file in Google Drive:
+### URL Support
 
-```
-https://docs.google.com/document/d/1abc123xyz/edit
-                                   ^^^^^^^^^^
-                                   This is the file ID
+You can use full Google Drive URLs instead of file IDs:
+
+```bash
+# Any of these formats work:
+uv run gdrive-utils info "https://docs.google.com/document/d/1abc123xyz/edit"
+uv run gdrive-utils info "https://docs.google.com/document/d/1abc123xyz/edit?tab=t.0"
+uv run gdrive-utils info "https://drive.google.com/file/d/1abc123xyz/view"
+uv run gdrive-utils info "1abc123xyz"  # Or just the ID
 ```
 
 ## Commands
 
-- `list [-q query] [-t type] [-n max] [-v]` - List and search files
-- `info <file-id>` - Show file metadata
-- `export <file-id> [-o output]` - Export Google Doc as markdown
-- `download <file-id> [-o output]` - Download a file
+- `list [-q query] [-t type] [-n max] [-v]` - List and search files in Google Drive
+- `info <file-id-or-url> [-v]` - Show file metadata, permissions, and structure
+- `export <file-id-or-url> [-o output] [--all-tabs]` - Export Google Doc as markdown
+- `download <file-id-or-url> [-o output]` - Download a file from Google Drive
 - `hello [name]` - Simple test command
+
+**All commands support:**
+- Full Google Drive URLs (Docs, Sheets, Slides, Drive files)
+- File IDs extracted from URLs
+- Plain file IDs
 
 ## Development
 
