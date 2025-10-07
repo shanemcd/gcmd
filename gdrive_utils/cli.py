@@ -25,15 +25,6 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", metavar="<command>")
     subparsers.required = False
 
-    # Example subcommand placeholder
-    hello_parser = subparsers.add_parser(
-        "hello",
-        help="Print a greeting",
-        description="Print a friendly greeting to verify the CLI works",
-    )
-    hello_parser.add_argument("name", nargs="?", default="world", help="Name to greet")
-    hello_parser.set_defaults(func=cmd_hello)
-
     # Export subcommand - export Google Docs as markdown
     export_parser = subparsers.add_parser(
         "export",
@@ -136,11 +127,6 @@ def build_parser() -> argparse.ArgumentParser:
     list_parser.set_defaults(func=cmd_list)
 
     return parser
-
-
-def cmd_hello(args: argparse.Namespace) -> int:
-    print(f"Hello, {args.name}!")
-    return 0
 
 
 def cmd_export(args: argparse.Namespace) -> int:

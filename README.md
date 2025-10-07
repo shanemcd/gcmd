@@ -138,7 +138,6 @@ uv run gdrive-utils info "1abc123xyz"  # Or just the ID
 - `info <file-id-or-url> [-v] [--show-comments]` - Show file metadata, permissions, structure, and comments
 - `export <file-id-or-url> [-o output] [--all-tabs]` - Export Google Doc as markdown
 - `download <file-id-or-url> [-o output]` - Download a file from Google Drive
-- `hello [name]` - Simple test command
 
 **All commands support:**
 - Full Google Drive URLs (Docs, Sheets, Slides, Drive files)

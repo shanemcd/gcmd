@@ -6,8 +6,8 @@ This document tracks the CLI agents, workflows, and conventions for `gdrive-util
 
 - Run help:
   - `uv run gdrive-utils --help`
-- Run a sample command:
-  - `uv run gdrive-utils hello Shane`
+- List your Google Drive files:
+  - `uv run gdrive-utils list`
 
 ## Authentication Setup
 
@@ -23,9 +23,6 @@ Before using Drive commands, you need to set up OAuth credentials:
 On first use, the CLI will open your browser to authenticate. Credentials are cached in `~/.config/gdrive-utils/token.json`.
 
 ## Current Commands
-
-### Basic Commands
-- `hello [name]`: simple smoke test to verify the CLI wiring and environment
 
 ### File Operations
 - `list [-q query] [-t type] [-n max] [-v]`: list and search files in Google Drive
