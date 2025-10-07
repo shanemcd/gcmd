@@ -8,7 +8,8 @@ A Python CLI tool for working with Google Drive. Download files, export Google D
 - 📄 **Export Google Docs** as markdown with full formatting (headings, tables, links, bold, italic)
 - 📑 **Multi-tab support** - export each tab as a separate file
 - 🔍 **Search and list** files with filtering by type and query
-- 📊 **Detailed file info** - view metadata, permissions, sharing, document structure, and tabs
+- 📊 **Detailed file info** - view metadata, permissions, sharing, document structure, tabs, and comments
+- 💬 **Comments access** - view all comments and replies with quoted text and timestamps
 - 💾 **Download files** from Google Drive
 - 🔗 **URL support** - paste full Google Drive URLs instead of file IDs
 - 🚀 **Fast and easy to use**
@@ -97,14 +98,17 @@ uv run gdrive-utils download 1abc123xyz -o ~/Downloads/myfile.pdf
 
 ### View File Info
 
-View detailed information including metadata, permissions, sharing status, and document structure.
+View detailed information including metadata, permissions, sharing status, document structure, and comments.
 
 ```bash
 # Basic info
 uv run gdrive-utils info "https://docs.google.com/document/d/1abc123xyz/edit"
 
-# Detailed info with permissions, capabilities, tabs, and document structure
+# Detailed info with permissions, capabilities, tabs, structure, and comments
 uv run gdrive-utils info -v "https://docs.google.com/document/d/1abc123xyz/edit"
+
+# Show only comments and replies
+uv run gdrive-utils info --show-comments "https://docs.google.com/document/d/1abc123xyz/edit"
 ```
 
 The verbose output shows:
@@ -114,6 +118,7 @@ The verbose output shows:
 - Your capabilities (can edit, comment, share, download, etc.)
 - Document tabs (for multi-tab Google Docs)
 - Document outline with all headings
+- Comments and replies with quoted text and timestamps
 
 ### URL Support
 
@@ -130,7 +135,7 @@ uv run gdrive-utils info "1abc123xyz"  # Or just the ID
 ## Commands
 
 - `list [-q query] [-t type] [-n max] [-v]` - List and search files in Google Drive
-- `info <file-id-or-url> [-v]` - Show file metadata, permissions, and structure
+- `info <file-id-or-url> [-v] [--show-comments]` - Show file metadata, permissions, structure, and comments
 - `export <file-id-or-url> [-o output] [--all-tabs]` - Export Google Doc as markdown
 - `download <file-id-or-url> [-o output]` - Download a file from Google Drive
 - `hello [name]` - Simple test command
@@ -139,6 +144,10 @@ uv run gdrive-utils info "1abc123xyz"  # Or just the ID
 - Full Google Drive URLs (Docs, Sheets, Slides, Drive files)
 - File IDs extracted from URLs
 - Plain file IDs
+
+**Info command options:**
+- `-v, --verbose` - Show detailed info including permissions, tabs, structure, and comments
+- `--show-comments` - Show only comments (without other verbose details)
 
 ## Development
 

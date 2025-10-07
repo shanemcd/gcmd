@@ -29,7 +29,7 @@ On first use, the CLI will open your browser to authenticate. Credentials are ca
 
 ### File Operations
 - `list [-q query] [-t type] [-n max] [-v]`: list and search files in Google Drive
-- `info <file-id-or-url> [-v]`: show metadata, permissions, tabs, and structure
+- `info <file-id-or-url> [-v] [--show-comments]`: show metadata, permissions, tabs, structure, and comments
 - `download <file-id-or-url> [-o output]`: download a file from Google Drive
 - `export <file-id-or-url> [-o output] [--all-tabs]`: export Google Doc as markdown with full formatting
 
@@ -38,6 +38,7 @@ On first use, the CLI will open your browser to authenticate. Credentials are ca
 - ✅ **Native Markdown Export**: Uses Google's native markdown with formatting (headings, tables, links, bold, italic)
 - ✅ **Multi-tab Support**: Export each tab as a separate file with `--all-tabs`
 - ✅ **Detailed Info**: View permissions, sharing, capabilities, document tabs, and heading structure
+- ✅ **Comments**: View all comments and replies with quoted text, authors, and timestamps
 - ✅ **Auto-naming**: Exported files use document title and `.exported.md` extension (auto-ignored by git)
 
 **Examples:**
@@ -57,8 +58,11 @@ uv run gdrive-utils list -v -n 10
 # Show basic file metadata (using URL)
 uv run gdrive-utils info "https://docs.google.com/document/d/1abc123xyz/edit"
 
-# Show detailed info with permissions, tabs, and structure
+# Show detailed info with permissions, tabs, structure, and comments
 uv run gdrive-utils info -v "https://docs.google.com/document/d/1abc123xyz/edit?tab=t.0"
+
+# Show only comments (without other verbose details)
+uv run gdrive-utils info --show-comments "https://docs.google.com/document/d/1abc123xyz/edit"
 
 # Export Google Doc with document title as filename
 uv run gdrive-utils export "https://docs.google.com/document/d/1abc123xyz/edit"

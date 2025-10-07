@@ -5,6 +5,7 @@ from .download import export_google_doc_as_markdown, download_file, get_file_met
 from .list import list_files, search_files, list_google_docs, format_file_list
 from .utils import extract_file_id
 from .docs import list_document_tabs, get_document_structure, format_tabs_output, format_headings_output, export_all_tabs
+from .comments import list_comments, format_comments_output
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -89,7 +90,12 @@ def build_parser() -> argparse.ArgumentParser:
         "-v",
         "--verbose",
         action="store_true",
-        help="Show detailed information (permissions, sharing, capabilities)",
+        help="Show detailed information (permissions, sharing, capabilities, comments)",
+    )
+    info_parser.add_argument(
+        "--show-comments",
+        action="store_true",
+        help="Show comments (automatically enabled with -v)",
     )
     info_parser.set_defaults(func=cmd_info)
 
@@ -292,6 +298,23 @@ def cmd_info(args: argparse.Namespace) -> int:
                     
                 except Exception as doc_error:
                     print(f"\nNote: Could not retrieve document structure: {doc_error}")
+        
+        # Show comments if requested (or if verbose)
+        if args.verbose or args.show_comments:
+            try:
+                comments = list_comments(file_id)
+                if comments:
+                    print(f"\n{'='*70}")
+                    print(f"COMMENTS")
+                    print(format_comments_output(comments))
+                else:
+                    print(f"\n{'='*70}")
+                    print(f"COMMENTS")
+                    print(f"{'='*70}\n")
+                    print("No comments on this file.")
+                    print(f"\n{'='*70}\n")
+            except Exception as comment_error:
+                print(f"\nNote: Could not retrieve comments: {comment_error}")
         
         print(f"\n{'='*70}\n")
         return 0
