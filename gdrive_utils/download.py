@@ -86,19 +86,21 @@ def export_google_doc_as_markdown(file_id: str, output_path: Optional[str] = Non
         
         # Get the content
         content = fh.getvalue().decode("utf-8")
-        
+
+        # Sanitize filename to avoid path traversal issues
+        import re
+        safe_filename = re.sub(r'[<>:"/\\|?*]', '_', file_name)
+
         # Determine output path
         if output_path:
-            output_file = Path(output_path)
+            output_file = Path(output_path).expanduser()
             # If it's a directory, use the file name
             if output_file.is_dir():
-                output_file = output_file / f"{file_name}.md"
+                output_file = output_file / f"{safe_filename}.md"
             elif not output_file.suffix:
                 output_file = output_file.with_suffix(".md")
         elif use_title:
             # Use document title as filename in current directory with "exported" suffix
-            import re
-            safe_filename = re.sub(r'[<>:"/\\|?*]', '_', file_name)
             output_file = Path(f"{safe_filename}.exported.md")
         else:
             # Print to stdout
@@ -138,17 +140,21 @@ def download_file(file_id: str, output_path: Optional[str] = None) -> str:
                 f"This is a Google {mime_type.split('.')[-1].title()}. "
                 f"Use 'export' command with appropriate format."
             )
-        
+
+        # Sanitize filename to avoid path traversal issues
+        import re
+        safe_filename = re.sub(r'[<>:"/\\|?*]', '_', file_name)
+
         # Download the file
         request = service.files().get_media(fileId=file_id)
-        
+
         # Determine output path
         if output_path:
-            output_file = Path(output_path)
+            output_file = Path(output_path).expanduser()
             if output_file.is_dir():
-                output_file = output_file / file_name
+                output_file = output_file / safe_filename
         else:
-            output_file = Path(file_name)
+            output_file = Path(safe_filename)
         
         output_file.parent.mkdir(parents=True, exist_ok=True)
         

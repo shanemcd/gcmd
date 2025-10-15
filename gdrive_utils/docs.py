@@ -258,8 +258,8 @@ def export_all_tabs(document_id: str, output_dir: str = ".") -> List[str]:
     
     # Sanitize filename
     safe_title = re.sub(r'[<>:"/\\|?*]', '_', doc_title)
-    
-    output_path = Path(output_dir)
+
+    output_path = Path(output_dir).expanduser()
     output_path.mkdir(parents=True, exist_ok=True)
     
     exported_files = []
