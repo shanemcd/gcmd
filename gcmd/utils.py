@@ -1,5 +1,5 @@
 """
-Utility functions for gdrive-utils.
+Utility functions for gcmd.
 """
 
 import re

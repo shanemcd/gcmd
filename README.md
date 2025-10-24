@@ -1,6 +1,6 @@
-# gdrive-utils
+# gcmd
 
-A Python CLI tool for working with Google Drive. Download files, export Google Docs as markdown, and manage your Drive files from the command line.
+A Python CLI tool for working with Google services. Download files, export Google Docs as markdown, manage your Drive files, and more from the command line.
 
 ## Features
 
@@ -20,11 +20,11 @@ A Python CLI tool for working with Google Drive. Download files, export Google D
 
 ```bash
 # Clone the repository
-git clone https://github.com/shanemcd/gdrive-utils.git
-cd gdrive-utils
+git clone https://github.com/shanemcd/gcmd.git
+cd gcmd
 
 # Run with uv (no installation needed)
-uv run gdrive-utils --help
+uv run gcmd --help
 ```
 
 ## Setup
@@ -36,9 +36,9 @@ Before using Drive commands, you need to set up OAuth credentials:
 3. Enable the **Google Drive API** and **Google Docs API**
 4. Create **OAuth 2.0 Client ID** credentials (Desktop app type)
 5. Download the JSON credentials file
-6. Save it to `~/.config/gdrive-utils/credentials.json`
+6. Save it to `~/.config/gcmd/credentials.json`
 
-On first use, the CLI will open your browser to authenticate. Credentials are cached in `~/.config/gdrive-utils/token.json`.
+On first use, the CLI will open your browser to authenticate. Credentials are cached in `~/.config/gcmd/token.json`.
 
 ## Usage
 
@@ -46,19 +46,19 @@ On first use, the CLI will open your browser to authenticate. Credentials are ca
 
 ```bash
 # List recent files (default 20, sorted by modified date)
-uv run gdrive-utils list
+uv run gcmd list
 
 # List only Google Docs
-uv run gdrive-utils list -t docs
+uv run gcmd list -t docs
 
 # Search for files by name or content
-uv run gdrive-utils list -q "project report"
+uv run gcmd list -q "project report"
 
 # List with verbose details
-uv run gdrive-utils list -v -n 10
+uv run gcmd list -v -n 10
 
 # List only folders
-uv run gdrive-utils list -t folders
+uv run gcmd list -t folders
 ```
 
 ### Export Google Docs as Markdown
@@ -67,21 +67,21 @@ Google Docs are exported using Google's native markdown export, preserving forma
 
 ```bash
 # Export with document title as filename (recommended)
-uv run gdrive-utils export "https://docs.google.com/document/d/1abc123xyz/edit"
+uv run gcmd export "https://docs.google.com/document/d/1abc123xyz/edit"
 # Creates: Document Title.exported.md
 
 # Export all tabs as separate files
-uv run gdrive-utils export --all-tabs "https://docs.google.com/document/d/1abc123xyz/edit"
+uv run gcmd export --all-tabs "https://docs.google.com/document/d/1abc123xyz/edit"
 # Creates: Document Title - Tab1.exported.md, Document Title - Tab2.exported.md, etc.
 
 # Export to specific file
-uv run gdrive-utils export 1abc123xyz -o document.md
+uv run gcmd export 1abc123xyz -o document.md
 
 # Export to directory (uses document title)
-uv run gdrive-utils export 1abc123xyz -o ~/Documents/
+uv run gcmd export 1abc123xyz -o ~/Documents/
 
 # Export all tabs to specific directory
-uv run gdrive-utils export --all-tabs 1abc123xyz -o ~/Documents/
+uv run gcmd export --all-tabs 1abc123xyz -o ~/Documents/
 ```
 
 **Note:** Files with `.exported.md` extension are automatically ignored by git (see `.gitignore`).
@@ -90,10 +90,10 @@ uv run gdrive-utils export --all-tabs 1abc123xyz -o ~/Documents/
 
 ```bash
 # Download to current directory
-uv run gdrive-utils download 1abc123xyz
+uv run gcmd download 1abc123xyz
 
 # Download to specific path
-uv run gdrive-utils download 1abc123xyz -o ~/Downloads/myfile.pdf
+uv run gcmd download 1abc123xyz -o ~/Downloads/myfile.pdf
 ```
 
 ### View File Info
@@ -102,13 +102,13 @@ View detailed information including metadata, permissions, sharing status, docum
 
 ```bash
 # Basic info
-uv run gdrive-utils info "https://docs.google.com/document/d/1abc123xyz/edit"
+uv run gcmd info "https://docs.google.com/document/d/1abc123xyz/edit"
 
 # Detailed info with permissions, capabilities, tabs, structure, and comments
-uv run gdrive-utils info -v "https://docs.google.com/document/d/1abc123xyz/edit"
+uv run gcmd info -v "https://docs.google.com/document/d/1abc123xyz/edit"
 
 # Show only comments and replies
-uv run gdrive-utils info --show-comments "https://docs.google.com/document/d/1abc123xyz/edit"
+uv run gcmd info --show-comments "https://docs.google.com/document/d/1abc123xyz/edit"
 ```
 
 The verbose output shows:
@@ -126,10 +126,10 @@ You can use full Google Drive URLs instead of file IDs:
 
 ```bash
 # Any of these formats work:
-uv run gdrive-utils info "https://docs.google.com/document/d/1abc123xyz/edit"
-uv run gdrive-utils info "https://docs.google.com/document/d/1abc123xyz/edit?tab=t.0"
-uv run gdrive-utils info "https://drive.google.com/file/d/1abc123xyz/view"
-uv run gdrive-utils info "1abc123xyz"  # Or just the ID
+uv run gcmd info "https://docs.google.com/document/d/1abc123xyz/edit"
+uv run gcmd info "https://docs.google.com/document/d/1abc123xyz/edit?tab=t.0"
+uv run gcmd info "https://drive.google.com/file/d/1abc123xyz/view"
+uv run gcmd info "1abc123xyz"  # Or just the ID
 ```
 
 ## Commands

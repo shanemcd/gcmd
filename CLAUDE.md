@@ -1,6 +1,6 @@
-# Claude Context for gdrive-utils
+# Claude Context for gcmd
 
-This file provides context for Claude when working on the `gdrive-utils` project.
+This file provides context for Claude when working on the `gcmd` project.
 
 ## Important Context Files
 
@@ -8,10 +8,10 @@ This file provides context for Claude when working on the `gdrive-utils` project
 
 ## Quick Reference
 
-- **Run CLI**: `uv run gdrive-utils [command]`
-- **Package**: `gdrive_utils` (underscore)
-- **Console script**: `gdrive-utils` (hyphen)
-- **Entry point**: `gdrive_utils.cli:main`
+- **Run CLI**: `uv run gcmd [command]`
+- **Package**: `gcmd` (no underscore)
+- **Console script**: `gcmd` (no hyphen)
+- **Entry point**: `gcmd.cli:main`
 
 ## Development Guidelines
 

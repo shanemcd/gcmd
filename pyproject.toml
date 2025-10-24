@@ -1,14 +1,14 @@
 [project]
-name = "gdrive-utils"
+name = "gcmd"
 version = "0.1.0"
-description = "Utilities CLI for working with Google Drive"
+description = "Command-line utilities for Google services (Drive, Docs, Sheets, and more)"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [
   { name = "Shane McDonald", email = "me@shanemcd.com" }
 ]
-keywords = ["google", "drive", "cli", "utils"]
+keywords = ["google", "drive", "docs", "sheets", "cli", "utils"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: MIT License",
@@ -23,11 +23,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/shanemcd/gdrive-utils"
-Repository = "https://github.com/shanemcd/gdrive-utils"
+Homepage = "https://github.com/shanemcd/gcmd"
+Repository = "https://github.com/shanemcd/gcmd"
 
 [project.scripts]
-gdrive-utils = "gdrive_utils.cli:main"
+gcmd = "gcmd.cli:main"
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]
@@ -38,6 +38,6 @@ package-dir = {"" = "."}
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["gdrive_utils*"]
+include = ["gcmd*"]
 exclude = ["tests*"]
 

@@ -20,9 +20,9 @@ SCOPES = [
 
 
 def get_config_dir() -> Path:
-    """Get the configuration directory for gdrive-utils."""
+    """Get the configuration directory for gcmd."""
     config_home = os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))
-    config_dir = Path(config_home) / "gdrive-utils"
+    config_dir = Path(config_home) / "gcmd"
     config_dir.mkdir(parents=True, exist_ok=True)
     return config_dir
 
@@ -90,12 +90,12 @@ def get_authenticated_credentials() -> Credentials:
             f"{'='*70}\n\n"
             f"OAuth credentials file not found at:\n"
             f"  {credentials_path}\n\n"
-            f"To use gdrive-utils, you need to create OAuth credentials:\n\n"
+            f"To use gcmd, you need to create OAuth credentials:\n\n"
             f"1. Go to: https://console.cloud.google.com/apis/credentials\n"
             f"   - Create a new project (or select existing)\n"
             f"   - Click '+ CREATE CREDENTIALS' → 'OAuth client ID'\n"
             f"   - Application type: 'Desktop app'\n"
-            f"   - Name it anything (e.g., 'gdrive-utils')\n\n"
+            f"   - Name it anything (e.g., 'gcmd')\n\n"
             f"2. Enable required APIs:\n"
             f"   - Google Drive API: https://console.cloud.google.com/apis/library/drive.googleapis.com\n"
             f"   - Google Docs API: https://console.cloud.google.com/apis/library/docs.googleapis.com\n\n"

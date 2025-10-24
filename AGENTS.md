@@ -1,13 +1,13 @@
-# gdrive-utils Agents
+# gcmd Agents
 
-This document tracks the CLI agents, workflows, and conventions for `gdrive-utils`. We'll iterate here as features land.
+This document tracks the CLI agents, workflows, and conventions for `gcmd`. We'll iterate here as features land.
 
 ## Quickstart
 
 - Run help:
-  - `uv run gdrive-utils --help`
+  - `uv run gcmd --help`
 - List your Google Drive files:
-  - `uv run gdrive-utils list`
+  - `uv run gcmd list`
 
 ## Authentication Setup
 
@@ -18,9 +18,9 @@ Before using Drive commands, you need to set up OAuth credentials:
 3. Enable the Google Drive API and Google Docs API
 4. Create OAuth 2.0 Client ID credentials (Desktop app type)
 5. Download the JSON credentials file
-6. Save it to `~/.config/gdrive-utils/credentials.json`
+6. Save it to `~/.config/gcmd/credentials.json`
 
-On first use, the CLI will open your browser to authenticate. Credentials are cached in `~/.config/gdrive-utils/token.json`.
+On first use, the CLI will open your browser to authenticate. Credentials are cached in `~/.config/gcmd/token.json`.
 
 ## Current Commands
 
@@ -41,39 +41,39 @@ On first use, the CLI will open your browser to authenticate. Credentials are ca
 **Examples:**
 ```bash
 # List recent files (default 20, sorted by modified date)
-uv run gdrive-utils list
+uv run gcmd list
 
 # List only Google Docs
-uv run gdrive-utils list -t docs
+uv run gcmd list -t docs
 
 # Search for files by name or content
-uv run gdrive-utils list -q "project report"
+uv run gcmd list -q "project report"
 
 # List with verbose details
-uv run gdrive-utils list -v -n 10
+uv run gcmd list -v -n 10
 
 # Show basic file metadata (using URL)
-uv run gdrive-utils info "https://docs.google.com/document/d/1abc123xyz/edit"
+uv run gcmd info "https://docs.google.com/document/d/1abc123xyz/edit"
 
 # Show detailed info with permissions, tabs, structure, and comments
-uv run gdrive-utils info -v "https://docs.google.com/document/d/1abc123xyz/edit?tab=t.0"
+uv run gcmd info -v "https://docs.google.com/document/d/1abc123xyz/edit?tab=t.0"
 
 # Show only comments (without other verbose details)
-uv run gdrive-utils info --show-comments "https://docs.google.com/document/d/1abc123xyz/edit"
+uv run gcmd info --show-comments "https://docs.google.com/document/d/1abc123xyz/edit"
 
 # Export Google Doc with document title as filename
-uv run gdrive-utils export "https://docs.google.com/document/d/1abc123xyz/edit"
+uv run gcmd export "https://docs.google.com/document/d/1abc123xyz/edit"
 # Creates: Document Title.exported.md
 
 # Export all tabs as separate files
-uv run gdrive-utils export --all-tabs "https://docs.google.com/document/d/1abc123xyz/edit"
+uv run gcmd export --all-tabs "https://docs.google.com/document/d/1abc123xyz/edit"
 # Creates: Document Title - Tab1.exported.md, Document Title - Tab2.exported.md, etc.
 
 # Export to specific file
-uv run gdrive-utils export 1abc123xyz -o document.md
+uv run gcmd export 1abc123xyz -o document.md
 
 # Download a regular file
-uv run gdrive-utils download "https://drive.google.com/file/d/1abc123xyz/view" -o ~/Downloads/
+uv run gcmd download "https://drive.google.com/file/d/1abc123xyz/view" -o ~/Downloads/
 ```
 
 **Note:** All commands accept Google Drive URLs or file IDs. URLs can include tabs, fragments, and query parameters.
@@ -109,8 +109,8 @@ These are candidate subcommands we can design and prioritize. We'll refine flags
 ### Current Implementation ✅
 
 OAuth user authentication with browser-based flow:
-- Credentials file: `~/.config/gdrive-utils/credentials.json` (OAuth client ID from Google Cloud Console)
-- Token cache: `~/.config/gdrive-utils/token.json` (auto-generated after first auth)
+- Credentials file: `~/.config/gcmd/credentials.json` (OAuth client ID from Google Cloud Console)
+- Token cache: `~/.config/gcmd/token.json` (auto-generated after first auth)
 - Scopes: Drive readonly, file access, and metadata
 
 ### Future Plans
@@ -118,14 +118,14 @@ OAuth user authentication with browser-based flow:
 Service Account support and additional configuration:
 1. Flags: `--auth oauth|service`, explicit project/env selectors
 2. Environment variables and `.env` (optional)
-3. Config file: `~/.config/gdrive-utils/config.toml`
+3. Config file: `~/.config/gcmd/config.toml`
 
 Secrets (tokens, refresh tokens, service account keys) are stored securely; never commit them.
 
 ## Conventions
 
-- Execution: prefer `uv run gdrive-utils ...` for local development
-- Console name: `gdrive-utils`, package: `gdrive_utils`
+- Execution: prefer `uv run gcmd ...` for local development
+- Console name: `gcmd`, package: `gcmd`
 - Output: default human-readable; `--json` to emit structured JSON (planned)
 - Exit codes: non-zero on errors; subcommands return actionable messages
 - Logging: `--verbose` for detailed output; `--version` implemented

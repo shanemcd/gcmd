@@ -10,16 +10,16 @@ from .comments import list_comments, format_comments_output
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="gdrive-utils",
-        description="Utilities for working with Google Drive",
+        prog="gcmd",
+        description="Command-line utilities for Google services (Drive, Docs, Sheets, and more)",
     )
 
     parser.add_argument(
         "-V",
         "--version",
         action="version",
-        version=f"gdrive-utils {__version__}",
-        help="Show the gdrive-utils version and exit",
+        version=f"gcmd {__version__}",
+        help="Show the gcmd version and exit",
     )
 
     subparsers = parser.add_subparsers(dest="command", metavar="<command>")
