@@ -11,11 +11,14 @@ This document tracks the CLI agents, workflows, and conventions for `gcmd`. We'l
 
 ## Authentication Setup
 
-Before using Drive commands, you need to set up OAuth credentials:
+Before using gcmd commands, you need to set up OAuth credentials:
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
 2. Create a new project or select an existing one
-3. Enable the Google Drive API and Google Docs API
+3. Enable the required APIs:
+   - Google Drive API
+   - Google Docs API
+   - Google Tasks API
 4. Create OAuth 2.0 Client ID credentials (Desktop app type)
 5. Download the JSON credentials file
 6. Save it to `~/.config/gcmd/credentials.json`
@@ -29,6 +32,9 @@ On first use, the CLI will open your browser to authenticate. Credentials are ca
 - `info <file-id-or-url> [-v] [--show-comments]`: show metadata, permissions, tabs, structure, and comments
 - `download <file-id-or-url> [-o output]`: download a file from Google Drive
 - `export <file-id-or-url> [-o output] [--all-tabs]`: export Google Doc as markdown with full formatting
+
+### Tasks Operations
+- `tasks [-l list-id] [-n max] [-c] [-v] [--list-all-lists]`: list Google Tasks from your task lists
 
 **Key Features:**
 - ✅ **URL Support**: Paste full Google Drive URLs (Docs, Sheets, Slides, Drive files)
@@ -76,7 +82,28 @@ uv run gcmd export 1abc123xyz -o document.md
 uv run gcmd download "https://drive.google.com/file/d/1abc123xyz/view" -o ~/Downloads/
 ```
 
-**Note:** All commands accept Google Drive URLs or file IDs. URLs can include tabs, fragments, and query parameters.
+**Note:** All Drive commands accept Google Drive URLs or file IDs. URLs can include tabs, fragments, and query parameters.
+
+**Tasks Examples:**
+```bash
+# List tasks from your default task list
+uv run gcmd tasks
+
+# List tasks with detailed information
+uv run gcmd tasks -v
+
+# Include completed tasks
+uv run gcmd tasks -c
+
+# List all your task lists
+uv run gcmd tasks --list-all-lists
+
+# List tasks from a specific task list
+uv run gcmd tasks -l "your-task-list-id"
+
+# Limit number of results
+uv run gcmd tasks -n 50
+```
 
 ## Proposed Agents and Workflows
 
@@ -103,6 +130,11 @@ These are candidate subcommands we can design and prioritize. We'll refine flags
 - Administration
   - `perm-audit [--folder <id|path>] [--recursive]` summarize external shares
   - `quota` view usage by owner, mime-type, folder
+- Tasks
+  - ~~`tasks [-l list-id] [-n max] [-c]`: list tasks from Google Tasks~~ ✅ **DONE**
+  - `task-create <title> [--notes <notes>] [--due <date>]`: create a new task
+  - `task-update <task-id> [--title <title>] [--status <status>]`: update a task
+  - `task-delete <task-id>`: delete a task
 
 ## Auth & Configuration
 
@@ -111,7 +143,7 @@ These are candidate subcommands we can design and prioritize. We'll refine flags
 OAuth user authentication with browser-based flow:
 - Credentials file: `~/.config/gcmd/credentials.json` (OAuth client ID from Google Cloud Console)
 - Token cache: `~/.config/gcmd/token.json` (auto-generated after first auth)
-- Scopes: Drive readonly, file access, and metadata
+- Scopes: Drive readonly, file access, metadata, and Tasks readonly
 
 ### Future Plans
 
@@ -142,11 +174,13 @@ Secrets (tokens, refresh tokens, service account keys) are stored securely; neve
 6. ✅ Native markdown export with full formatting
 7. ✅ Multi-tab document support (view tabs, export individually)
 8. ✅ Detailed file info (permissions, sharing, capabilities, structure)
-9. ⏭️ Add `upload` command
-10. ⏭️ Add `share`/`perm-audit` with safety rails
-11. ⏭️ JSON output mode (`--json`)
-12. ⏭️ Google Sheets export (CSV/Excel)
-13. ⏭️ Additional export formats (PDF, HTML)
+9. ✅ Google Tasks integration (`tasks` command)
+10. ⏭️ Add `upload` command
+11. ⏭️ Add `share`/`perm-audit` with safety rails
+12. ⏭️ JSON output mode (`--json`)
+13. ⏭️ Google Sheets export (CSV/Excel)
+14. ⏭️ Additional export formats (PDF, HTML)
+15. ⏭️ Task create/update/delete operations
 
 ## Notes
 

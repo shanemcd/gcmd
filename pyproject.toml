@@ -1,6 +1,6 @@
 [project]
 name = "gcmd"
-version = "0.1.0"
+version = "0.2.0"
 description = "Command-line utilities for Google services (Drive, Docs, Sheets, and more)"
 readme = "README.md"
 requires-python = ">=3.9"

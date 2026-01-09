@@ -6,6 +6,7 @@ from .list import list_files, search_files, list_google_docs, format_file_list
 from .utils import extract_file_id
 from .docs import list_document_tabs, get_document_structure, format_tabs_output, format_headings_output, export_all_tabs
 from .comments import list_comments, format_comments_output
+from .tasks import list_tasks, list_task_lists, format_task_list, format_task_lists
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -125,6 +126,44 @@ def build_parser() -> argparse.ArgumentParser:
         help="Sort order (default: modifiedTime desc)",
     )
     list_parser.set_defaults(func=cmd_list)
+
+    # Tasks subcommand - list Google Tasks
+    tasks_parser = subparsers.add_parser(
+        "tasks",
+        help="List Google Tasks",
+        description="List tasks from Google Tasks",
+    )
+    tasks_parser.add_argument(
+        "-l",
+        "--list-id",
+        default="@default",
+        help="Task list ID (default: @default for your default task list)",
+    )
+    tasks_parser.add_argument(
+        "-n",
+        "--max-results",
+        type=int,
+        default=100,
+        help="Maximum number of tasks to return (default: 100)",
+    )
+    tasks_parser.add_argument(
+        "-c",
+        "--show-completed",
+        action="store_true",
+        help="Include completed tasks",
+    )
+    tasks_parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Show detailed task information",
+    )
+    tasks_parser.add_argument(
+        "--list-all-lists",
+        action="store_true",
+        help="Show all task lists instead of tasks",
+    )
+    tasks_parser.set_defaults(func=cmd_tasks)
 
     return parser
 
@@ -322,20 +361,53 @@ def cmd_list(args: argparse.Namespace) -> int:
                 "folders": "application/vnd.google-apps.folder",
             }
             mime_type = type_map.get(args.type.lower(), args.type)
-        
+
         files = list_files(
             query=args.query,
             mime_type=mime_type,
             max_results=args.max_results,
             order_by=args.order_by,
         )
-        
+
         output = format_file_list(files, verbose=args.verbose)
         print(output)
-        
+
         if files:
             print(f"\nFound {len(files)} file(s)", file=sys.stderr)
-        
+
+        return 0
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+
+def cmd_tasks(args: argparse.Namespace) -> int:
+    """Handle the 'tasks' subcommand."""
+    try:
+        # Show all task lists if requested
+        if args.list_all_lists:
+            task_lists = list_task_lists(max_results=args.max_results)
+            output = format_task_lists(task_lists)
+            print(output)
+
+            if task_lists:
+                print(f"Found {len(task_lists)} task list(s)", file=sys.stderr)
+
+            return 0
+
+        # Otherwise, show tasks from the specified list
+        tasks = list_tasks(
+            tasklist_id=args.list_id,
+            max_results=args.max_results,
+            show_completed=args.show_completed,
+        )
+
+        output = format_task_list(tasks, verbose=args.verbose)
+        print(output)
+
+        if tasks:
+            print(f"Found {len(tasks)} task(s)", file=sys.stderr)
+
         return 0
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
