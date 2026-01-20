@@ -7,6 +7,7 @@ from .utils import extract_file_id
 from .docs import list_document_tabs, get_document_structure, format_tabs_output, format_headings_output, export_all_tabs
 from .comments import list_comments, format_comments_output
 from .tasks import list_tasks, list_task_lists, format_task_list, format_task_lists
+from .sheets import export_spreadsheet_as_csv, list_sheets, format_sheets_output
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -26,11 +27,11 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", metavar="<command>")
     subparsers.required = False
 
-    # Export subcommand - export Google Docs as markdown
+    # Export subcommand - export Google Docs as markdown or Sheets as CSV
     export_parser = subparsers.add_parser(
         "export",
-        help="Export a Google Doc as markdown",
-        description="Export a Google Doc to markdown format",
+        help="Export a Google Doc as markdown or Sheet as CSV",
+        description="Export a Google Doc to markdown format, or a Google Sheet to CSV files (one per sheet)",
     )
     export_parser.add_argument(
         "file_id_or_url",
@@ -172,26 +173,51 @@ def cmd_export(args: argparse.Namespace) -> int:
     """Handle the 'export' subcommand."""
     try:
         file_id = extract_file_id(args.file_id_or_url)
-        
-        # Check if we should export all tabs
-        if args.all_tabs:
+
+        # Get file metadata to determine type
+        metadata = get_file_metadata(file_id)
+        mime_type = metadata.get("mimeType", "")
+
+        # Handle Google Sheets - export as CSV
+        if mime_type == "application/vnd.google-apps.spreadsheet":
             output_dir = args.output or "."
-            print(f"Exporting all tabs to: {output_dir}", file=sys.stderr)
-            
-            exported_files = export_all_tabs(file_id, output_dir)
-            
-            print(f"\n✓ Successfully exported {len(exported_files)} tab(s):", file=sys.stderr)
+            print(f"Exporting spreadsheet to: {output_dir}", file=sys.stderr)
+
+            exported_files = export_spreadsheet_as_csv(file_id, output_dir)
+
+            print(f"\n✓ Successfully exported {len(exported_files)} sheet(s):", file=sys.stderr)
             for filepath in exported_files:
                 print(f"  - {filepath}", file=sys.stderr)
-            
+
             return 0
+
+        # Handle Google Docs - export as markdown
+        elif mime_type == "application/vnd.google-apps.document":
+            # Check if we should export all tabs
+            if args.all_tabs:
+                output_dir = args.output or "."
+                print(f"Exporting all tabs to: {output_dir}", file=sys.stderr)
+
+                exported_files = export_all_tabs(file_id, output_dir)
+
+                print(f"\n✓ Successfully exported {len(exported_files)} tab(s):", file=sys.stderr)
+                for filepath in exported_files:
+                    print(f"  - {filepath}", file=sys.stderr)
+
+                return 0
+            else:
+                # Single file export (original behavior)
+                result = export_google_doc_as_markdown(file_id, args.output)
+                if result != "stdout":
+                    print(f"Exported to: {result}", file=sys.stderr)
+                return 0
+
         else:
-            # Single file export (original behavior)
-            result = export_google_doc_as_markdown(file_id, args.output)
-            if result != "stdout":
-                print(f"Exported to: {result}", file=sys.stderr)
-            return 0
-            
+            raise Exception(
+                f"Unsupported file type: {mime_type}. "
+                f"Export supports Google Docs (markdown) and Google Sheets (CSV)."
+            )
+
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         return 1

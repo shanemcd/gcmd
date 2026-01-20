@@ -43,3 +43,15 @@ def get_tasks_service() -> Resource:
     service = build("tasks", "v1", credentials=creds)
     return service
 
+
+def get_sheets_service() -> Resource:
+    """
+    Get an authenticated Google Sheets service instance.
+
+    Returns:
+        Resource: Google Sheets API service
+    """
+    creds = get_authenticated_credentials()
+    service = build("sheets", "v4", credentials=creds)
+    return service
+
