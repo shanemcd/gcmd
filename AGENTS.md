@@ -18,6 +18,7 @@ Before using gcmd commands, you need to set up OAuth credentials:
 3. Enable the required APIs:
    - Google Drive API
    - Google Docs API
+   - Google Sheets API
    - Google Tasks API
 4. Create OAuth 2.0 Client ID credentials (Desktop app type)
 5. Download the JSON credentials file
@@ -31,7 +32,7 @@ On first use, the CLI will open your browser to authenticate. Credentials are ca
 - `list [-q query] [-t type] [-n max] [-v]`: list and search files in Google Drive
 - `info <file-id-or-url> [-v] [--show-comments]`: show metadata, permissions, tabs, structure, and comments
 - `download <file-id-or-url> [-o output]`: download a file from Google Drive
-- `export <file-id-or-url> [-o output] [--all-tabs]`: export Google Doc as markdown with full formatting
+- `export <file-id-or-url> [-o output] [--all-tabs]`: export Google Doc as markdown or Sheet as CSV
 
 ### Tasks Operations
 - `tasks [-l list-id] [-n max] [-c] [-v] [--list-all-lists]`: list Google Tasks from your task lists
@@ -39,6 +40,7 @@ On first use, the CLI will open your browser to authenticate. Credentials are ca
 **Key Features:**
 - ✅ **URL Support**: Paste full Google Drive URLs (Docs, Sheets, Slides, Drive files)
 - ✅ **Native Markdown Export**: Uses Google's native markdown with formatting (headings, tables, links, bold, italic)
+- ✅ **Sheets CSV Export**: Export Google Sheets as CSV files (one file per sheet, with rate limit handling)
 - ✅ **Multi-tab Support**: Export each tab as a separate file with `--all-tabs`
 - ✅ **Detailed Info**: View permissions, sharing, capabilities, document tabs, and heading structure
 - ✅ **Comments**: View all comments and replies with quoted text, authors, and timestamps
@@ -77,6 +79,13 @@ uv run gcmd export --all-tabs "https://docs.google.com/document/d/1abc123xyz/edi
 
 # Export to specific file
 uv run gcmd export 1abc123xyz -o document.md
+
+# Export Google Sheet as CSV (creates directory with one CSV per sheet)
+uv run gcmd export "https://docs.google.com/spreadsheets/d/1abc123xyz/edit"
+# Creates: Spreadsheet Title/ directory with Sheet1.csv, Sheet2.csv, etc.
+
+# Export Sheet to specific directory
+uv run gcmd export "https://docs.google.com/spreadsheets/d/1abc123xyz/edit" -o ~/exports/
 
 # Download a regular file
 uv run gcmd download "https://drive.google.com/file/d/1abc123xyz/view" -o ~/Downloads/
@@ -125,8 +134,9 @@ These are candidate subcommands we can design and prioritize. We'll refine flags
 - Docs/Sheets Exports
   - ~~`export <doc-id> --format md`: export Google Doc as markdown~~ ✅ **DONE** (uses Google's native markdown export)
   - ~~`export <doc-id> --all-tabs`: export multi-tab documents~~ ✅ **DONE**
+  - ~~`export <sheet-id>`: export Google Sheets as CSV~~ ✅ **DONE** (auto-detects Sheets, exports one CSV per sheet)
   - `export <doc-id> --format pdf|html`: additional export formats
-  - `export <sheet-id>`: export Google Sheets as CSV/Excel
+  - `export <sheet-id> --format xlsx`: export Google Sheets as Excel
 - Administration
   - `perm-audit [--folder <id|path>] [--recursive]` summarize external shares
   - `quota` view usage by owner, mime-type, folder
@@ -143,7 +153,7 @@ These are candidate subcommands we can design and prioritize. We'll refine flags
 OAuth user authentication with browser-based flow:
 - Credentials file: `~/.config/gcmd/credentials.json` (OAuth client ID from Google Cloud Console)
 - Token cache: `~/.config/gcmd/token.json` (auto-generated after first auth)
-- Scopes: Drive readonly, file access, metadata, and Tasks readonly
+- Scopes: Drive readonly, Sheets readonly, file access, metadata, and Tasks readonly
 
 ### Future Plans
 
@@ -161,7 +171,7 @@ Secrets (tokens, refresh tokens, service account keys) are stored securely; neve
 - Output: default human-readable; `--json` to emit structured JSON (planned)
 - Exit codes: non-zero on errors; subcommands return actionable messages
 - Logging: `--verbose` for detailed output; `--version` implemented
-- File naming: exported files use `.exported.md` extension (auto-ignored by git via `.gitignore`)
+- File naming: exported Docs use `.exported.md` extension (auto-ignored by git); Sheets export to CSV files in a named directory
 - URL support: all commands accept full Google Drive URLs or file IDs
 
 ## Roadmap
@@ -175,12 +185,13 @@ Secrets (tokens, refresh tokens, service account keys) are stored securely; neve
 7. ✅ Multi-tab document support (view tabs, export individually)
 8. ✅ Detailed file info (permissions, sharing, capabilities, structure)
 9. ✅ Google Tasks integration (`tasks` command)
-10. ⏭️ Add `upload` command
-11. ⏭️ Add `share`/`perm-audit` with safety rails
-12. ⏭️ JSON output mode (`--json`)
-13. ⏭️ Google Sheets export (CSV/Excel)
-14. ⏭️ Additional export formats (PDF, HTML)
-15. ⏭️ Task create/update/delete operations
+10. ✅ Google Sheets CSV export (auto-detection, one CSV per sheet)
+11. ⏭️ Add `upload` command
+12. ⏭️ Add `share`/`perm-audit` with safety rails
+13. ⏭️ JSON output mode (`--json`)
+14. ⏭️ Google Sheets Excel export
+15. ⏭️ Additional export formats (PDF, HTML)
+16. ⏭️ Task create/update/delete operations
 
 ## Notes
 
